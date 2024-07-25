@@ -2,6 +2,7 @@
 
 import { ChangeEvent, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   FaArrowRight,
   FaGithub,
@@ -82,6 +83,7 @@ const CustomizeLinksForm: React.FC = () => {
     { id: number; platform: string; link: string }[]
   >([]);
   const [image, setImage] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleAddLink = () => {
     const newId = links.length
@@ -149,6 +151,13 @@ const CustomizeLinksForm: React.FC = () => {
     }
   };
 
+  const queryParams = new URLSearchParams();
+  queryParams.set("image", image || "");
+  queryParams.set("links", JSON.stringify(links || []));
+  const handlePreviewClick = () => {
+    router.push(`/profile/preview?${queryParams.toString()}`);
+  };
+
   return (
     <div className="p-8 flex flex-col gap-y-8">
       {/* Navbar */}
@@ -178,7 +187,10 @@ const CustomizeLinksForm: React.FC = () => {
           </button>
         </div>
         <div>
-          <button className="px-4 py-2 border-2 border-[#633CFF] rounded-md flex items-center">
+          <button
+            className="px-4 py-2 border-2 border-[#633CFF] rounded-md flex items-center"
+            onClick={handlePreviewClick}
+          >
             Preview
           </button>
         </div>
@@ -256,6 +268,8 @@ const CustomizeLinksForm: React.FC = () => {
                       src={image}
                       alt="Profile"
                       className="w-40 rounded-full mb-4"
+                      width={40}
+                      height={40}
                     />
                   ) : (
                     <label
