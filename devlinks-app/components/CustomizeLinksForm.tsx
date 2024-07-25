@@ -232,6 +232,15 @@ const CustomizeLinksForm: React.FC = () => {
                     <FaArrowRight className="text-white" />
                   </Link>
                 ))}
+                <div>
+                  <Image
+                    src={image || ""}
+                    alt="Image"
+                    className="w-16 h-16 object-cover rounded-full"
+                    width={80}
+                    height={80}
+                  />
+                </div>
               </div>
             </div>
             <div className="bg-white p-8 rounded-lg shadow-md w-full">
