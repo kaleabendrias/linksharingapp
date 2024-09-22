@@ -1,16 +1,29 @@
-"use client"
-import { useState, useEffect } from 'react';
+"use client";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FaArrowRight, FaGithub, FaTwitter, FaLinkedin, FaGlobe, FaLink } from "react-icons/fa";
+import {
+  FaArrowRight,
+  FaGithub,
+  FaTwitter,
+  FaLinkedin,
+  FaGlobe,
+  FaLink,
+} from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -27,15 +40,26 @@ interface LinkItemProps {
   onRemove: (id: number) => void;
 }
 
-const LinkItem: React.FC<LinkItemProps> = ({ id, platform, link, onChange, onRemove }) => {
+const LinkItem: React.FC<LinkItemProps> = ({
+  id,
+  platform,
+  link,
+  onChange,
+  onRemove,
+}) => {
   return (
     <Card>
       <CardContent className="pt-6">
         <div className="flex justify-between items-center mb-4">
           <Label htmlFor={`platform-${id}`}>Platform</Label>
-          <Button variant="destructive" size="sm" onClick={() => onRemove(id)}>Remove</Button>
+          <Button variant="destructive" size="sm" onClick={() => onRemove(id)}>
+            Remove
+          </Button>
         </div>
-        <Select value={platform} onValueChange={(value) => onChange(id, "platform", value)}>
+        <Select
+          value={platform}
+          onValueChange={(value) => onChange(id, "platform", value)}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select platform" />
           </SelectTrigger>
@@ -46,7 +70,9 @@ const LinkItem: React.FC<LinkItemProps> = ({ id, platform, link, onChange, onRem
             <SelectItem value="Website">Website</SelectItem>
           </SelectContent>
         </Select>
-        <Label htmlFor={`link-${id}`} className="mt-4 block">Link</Label>
+        <Label htmlFor={`link-${id}`} className="mt-4 block">
+          Link
+        </Label>
         <Input
           id={`link-${id}`}
           value={link}
@@ -61,7 +87,9 @@ const LinkItem: React.FC<LinkItemProps> = ({ id, platform, link, onChange, onRem
 
 const CustomizeLinksForm: React.FC = () => {
   const [links, setLinks] = useState([{ id: 1, platform: "GitHub", link: "" }]);
-  const [savedLinks, setSavedLinks] = useState<{ id: number; platform: string; link: string }[]>([]);
+  const [savedLinks, setSavedLinks] = useState<
+    { id: number; platform: string; link: string }[]
+  >([]);
   const [image, setImage] = useState<string | null>(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -70,7 +98,7 @@ const CustomizeLinksForm: React.FC = () => {
 
   useEffect(() => {
     // Load data from localStorage on component mount
-    const storedData = localStorage.getItem('profileData');
+    const storedData = localStorage.getItem("profileData");
     if (storedData) {
       const parsedData = JSON.parse(storedData);
       setLinks(parsedData.links || []);
@@ -89,13 +117,15 @@ const CustomizeLinksForm: React.FC = () => {
       image,
       firstName,
       lastName,
-      email
+      email,
     };
-    localStorage.setItem('profileData', JSON.stringify(dataToSave));
+    localStorage.setItem("profileData", JSON.stringify(dataToSave));
   };
 
   const handleAddLink = () => {
-    const newId = links.length ? Math.max(...links.map((link) => link.id)) + 1 : 1;
+    const newId = links.length
+      ? Math.max(...links.map((link) => link.id)) + 1
+      : 1;
     setLinks([...links, { id: newId, platform: "GitHub", link: "" }]);
   };
 
@@ -104,13 +134,15 @@ const CustomizeLinksForm: React.FC = () => {
   };
 
   const handleChangeLink = (id: number, field: string, value: string) => {
-    setLinks(links.map((link) => (link.id === id ? { ...link, [field]: value } : link)));
+    setLinks(
+      links.map((link) => (link.id === id ? { ...link, [field]: value } : link))
+    );
   };
 
   const handleSave = () => {
     setSavedLinks([...links]);
     saveToLocalStorage();
-    router.push('/profile/share');
+    router.push("/profile/share");
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,27 +158,37 @@ const CustomizeLinksForm: React.FC = () => {
 
   const getBackgroundColor = (platform: string) => {
     switch (platform) {
-      case "GitHub": return "bg-black text-white";
-      case "Twitter": return "bg-blue-500 text-white";
-      case "LinkedIn": return "bg-blue-700 text-white";
-      case "Website": return "bg-gray-300 text-black";
-      default: return "bg-gray-100 text-black";
+      case "GitHub":
+        return "bg-black text-white";
+      case "Twitter":
+        return "bg-blue-500 text-white";
+      case "LinkedIn":
+        return "bg-blue-700 text-white";
+      case "Website":
+        return "bg-gray-300 text-black";
+      default:
+        return "bg-gray-100 text-black";
     }
   };
 
   const getIcon = (platform: string) => {
     switch (platform) {
-      case "GitHub": return <FaGithub />;
-      case "Twitter": return <FaTwitter />;
-      case "LinkedIn": return <FaLinkedin />;
-      case "Website": return <FaGlobe />;
-      default: return null;
+      case "GitHub":
+        return <FaGithub />;
+      case "Twitter":
+        return <FaTwitter />;
+      case "LinkedIn":
+        return <FaLinkedin />;
+      case "Website":
+        return <FaGlobe />;
+      default:
+        return null;
     }
   };
 
   const handlePreviewClick = () => {
     saveToLocalStorage();
-    router.push('/profile/preview');
+    router.push("/profile/preview");
   };
 
   return (
@@ -163,24 +205,41 @@ const CustomizeLinksForm: React.FC = () => {
         {/* Mobile Preview */}
         <div className="lg:w-1/3 lg:sticky lg:top-8 lg:self-start">
           <div className="relative w-[240px] h-[480px] mx-auto">
-            <Image src={mob1} alt="Mobile background" layout="fill" objectFit="contain" />
+            <Image
+              src={mob1}
+              alt="Mobile background"
+              layout="fill"
+              objectFit="contain"
+            />
             <div className="absolute inset-0 flex justify-center items-center">
-              <Image src={mob2} alt="Mobile foreground" width={220} height={440} />
+              <Image
+                src={mob2}
+                alt="Mobile foreground"
+                width={220}
+                height={440}
+              />
             </div>
             <div className="absolute inset-y-16 w-full flex flex-col items-center gap-4 p-4 z-20">
               <Avatar className="w-16 h-16">
                 <AvatarImage src={image || ""} alt="Profile" />
-                <AvatarFallback>{firstName[0]}{lastName[0]}</AvatarFallback>
+                <AvatarFallback>
+                  {firstName[0]}
+                  {lastName[0]}
+                </AvatarFallback>
               </Avatar>
               <div className="text-center">
-                <h2 className="text-sm font-bold">{firstName} {lastName}</h2>
+                <h2 className="text-sm font-bold">
+                  {firstName} {lastName}
+                </h2>
                 <p className="text-xs text-gray-500">{email}</p>
               </div>
-              {savedLinks.map((link) => (
+              {links.map((link) => (
                 <Link
                   href={link.link}
                   key={link.id}
-                  className={`flex items-center justify-between w-full p-2 rounded-md ${getBackgroundColor(link.platform)}`}
+                  className={`flex items-center justify-between w-full p-2 rounded-md ${getBackgroundColor(
+                    link.platform
+                  )}`}
                 >
                   <div className="flex items-center gap-2">
                     {getIcon(link.platform)}
@@ -197,8 +256,12 @@ const CustomizeLinksForm: React.FC = () => {
         <div className="lg:w-2/3">
           <Tabs defaultValue="links">
             <TabsList className="grid w-full grid-cols-2 mb-8">
-              <TabsTrigger value="links"><FaLink className="mr-2" /> Links</TabsTrigger>
-              <TabsTrigger value="profile"><CgProfile className="mr-2" /> Profile Details</TabsTrigger>
+              <TabsTrigger value="links">
+                <FaLink className="mr-2" /> Links
+              </TabsTrigger>
+              <TabsTrigger value="profile">
+                <CgProfile className="mr-2" /> Profile Details
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="links">
@@ -207,7 +270,9 @@ const CustomizeLinksForm: React.FC = () => {
                   <CardTitle>Customize your links</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Button onClick={handleAddLink} className="w-full mb-4">+ Add new link</Button>
+                  <Button onClick={handleAddLink} className="w-full mb-4">
+                    + Add new link
+                  </Button>
                   <div className="space-y-4">
                     {links.map((link) => (
                       <LinkItem
@@ -220,7 +285,9 @@ const CustomizeLinksForm: React.FC = () => {
                       />
                     ))}
                   </div>
-                  <Button onClick={handleSave} className="w-full mt-4">Save</Button>
+                  <Button onClick={handleSave} className="w-full mt-4">
+                    Save
+                  </Button>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -235,7 +302,10 @@ const CustomizeLinksForm: React.FC = () => {
                     <div>
                       <Label htmlFor="profile-picture">Profile picture</Label>
                       <div className="mt-2 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6">
-                        <Label htmlFor="profile-picture" className="cursor-pointer">
+                        <Label
+                          htmlFor="profile-picture"
+                          className="cursor-pointer"
+                        >
                           {image ? (
                             <Avatar className="w-24 h-24">
                               <AvatarImage src={image} alt="Profile" />
@@ -286,7 +356,9 @@ const CustomizeLinksForm: React.FC = () => {
                         placeholder="e.g. email@example.com"
                       />
                     </div>
-                    <Button className="w-full" onClick={handleSave}>Save</Button>
+                    <Button className="w-full" onClick={handleSave}>
+                      Save
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
