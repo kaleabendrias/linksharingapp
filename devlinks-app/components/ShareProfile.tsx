@@ -20,10 +20,27 @@ import { useToast } from "@/hooks/use-toast";
 // Assuming you have this image in your public folder
 import logo from "../public/logo.png";
 
+// Define types for the links and profile data
+type LinkData = {
+  id: string;
+  platform: string;
+  link: string;
+};
+
+type ProfileData = {
+  image: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  links: LinkData[];
+};
+
 const ShareProfilePage = () => {
   const router = useRouter();
   const { toast } = useToast();
-  const [profileData, setProfileData] = useState({
+  
+  // Initialize state with ProfileData type
+  const [profileData, setProfileData] = useState<ProfileData>({
     image: "",
     firstName: "",
     lastName: "",
@@ -45,7 +62,8 @@ const ShareProfilePage = () => {
     setProfileUrl(`${window.location.origin}/profile/${uniqueId}`);
   }, []);
 
-  const getIcon = (platform) => {
+  // Define return type as JSX.Element and platform as a string
+  const getIcon = (platform: string): JSX.Element => {
     switch (platform) {
       case "GitHub":
         return <FaGithub />;
@@ -60,7 +78,8 @@ const ShareProfilePage = () => {
     }
   };
 
-  const getBackgroundColor = (platform) => {
+  // Define platform as a string
+  const getBackgroundColor = (platform: string): string => {
     switch (platform) {
       case "GitHub": return "bg-black text-white";
       case "Twitter": return "bg-blue-500 text-white";
@@ -70,7 +89,7 @@ const ShareProfilePage = () => {
     }
   };
 
-  const copyToClipboard = () => {
+  const copyToClipboard = (): void => {
     navigator.clipboard.writeText(profileUrl).then(
       () => {
         toast({
