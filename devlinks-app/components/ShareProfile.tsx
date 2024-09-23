@@ -50,19 +50,16 @@ const ShareProfilePage = () => {
   const [profileUrl, setProfileUrl] = useState("");
 
   useEffect(() => {
-    // Load profile data from localStorage
     const storedProfileData = localStorage.getItem("profileData");
     if (storedProfileData) {
       setProfileData(JSON.parse(storedProfileData));
     }
 
-    // Generate a unique profile URL (in a real app, this would be a backend operation)
     const uniqueId = localStorage.getItem("profileId") || Math.random().toString(36).substr(2, 9);
     localStorage.setItem("profileId", uniqueId);
     setProfileUrl(`${window.location.origin}/profile/${uniqueId}`);
   }, []);
 
-  // Define return type as JSX.Element and platform as a string
   const getIcon = (platform: string): JSX.Element => {
     switch (platform) {
       case "GitHub":
@@ -78,7 +75,6 @@ const ShareProfilePage = () => {
     }
   };
 
-  // Define platform as a string
   const getBackgroundColor = (platform: string): string => {
     switch (platform) {
       case "GitHub": return "bg-black text-white";

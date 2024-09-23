@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { auth } from "@/firebase";
 
 // Assuming you have these images in your public folder
 import logo from "../public/logo.png";
@@ -139,10 +140,47 @@ const CustomizeLinksForm: React.FC = () => {
     );
   };
 
-  const handleSave = () => {
-    setSavedLinks([...links]);
-    saveToLocalStorage();
-    router.push("/profile/share");
+  const getIdToken = async () => {
+    const user = auth.currentUser;
+    if (user) {
+      try {
+        const idToken = await user.getIdToken();
+        return idToken;
+      } catch (error) {
+        console.error("Error getting ID token:", error);
+        throw new Error("Unable to retrieve ID token");
+      }
+    } else {
+      throw new Error("No user is currently signed in");
+    }
+  };
+
+  const handleSave = async () => {
+    console.log("making it");
+    try {
+      const response = await fetch("https://linksharingapp-back.vercel.app/api/links", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await getIdToken()}`,
+        },
+        body: JSON.stringify({ links }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("Links saved successfully:", data);
+
+      setSavedLinks([...links]);
+      saveToLocalStorage();
+
+      router.push("/profile/qrcode");
+    } catch (error) {
+      console.error("Failed to save links:", error);
+    }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {

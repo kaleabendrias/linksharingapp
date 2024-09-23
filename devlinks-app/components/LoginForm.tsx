@@ -38,6 +38,8 @@ const LoginForm: React.FC = () => {
       );
       const idToken = await credential.user.getIdToken();
 
+      console.log("id: ", idToken)
+
       await fetch("/api/login", {
         headers: {
           Authorization: `Bearer ${idToken}`,
