@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import { auth } from "@/firebase";
 import * as htmlToImage from "html-to-image";
+import Popup from "@/components/PopUp";
 
 type Link = {
   _id: string;
@@ -33,6 +34,7 @@ const QRCodeProfilePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [qrCodeValue, setQRCodeValue] = useState<string>("");
   const qrCodeRef = useRef<HTMLDivElement | null>(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const getIdToken = async () => {
     const user = auth.currentUser;
@@ -58,13 +60,16 @@ const QRCodeProfilePage: React.FC = () => {
           throw new Error("No authenticated user found");
         }
 
-        const response = await fetch("https://linksharingapp-back.vercel.app/api/links", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${await getIdToken()}`,
-          },
-        });
+        const response = await fetch(
+          "https://linksharingapp-back.vercel.app/api/links",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${await getIdToken()}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
@@ -129,11 +134,11 @@ const QRCodeProfilePage: React.FC = () => {
         if (blob) {
           const item = new ClipboardItem({ "image/png": blob });
           await navigator.clipboard.write([item]);
-          alert("QR code copied to clipboard!");
+          setIsPopupOpen(true);
         }
       } catch (error) {
         console.error("Failed to copy image:", error);
-        alert("Failed to copy image to clipboard.");
+        setIsPopupOpen(true);
       }
     }
   };
@@ -199,6 +204,12 @@ const QRCodeProfilePage: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      <Popup
+        message="QR code copied to clipboard!"
+        isOpen={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+      />
     </div>
   );
 };
