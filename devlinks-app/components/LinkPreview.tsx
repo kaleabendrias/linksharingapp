@@ -1,8 +1,12 @@
 import Image from "next/image";
+import BackToHome from "./BackToHome";
 
 const LinkPreview = () => {
   return (
     <div className="flex flex-col items-center justify-center">
+      <div className="flex justify-start p-4">
+        <BackToHome />
+      </div>
       <div className="flex justify-start items-start mb-12">
         <Image src="/logo.png" alt="devlinks" width={40} height={40} />
         <p className="font-bold text-4xl">devlinks</p>
