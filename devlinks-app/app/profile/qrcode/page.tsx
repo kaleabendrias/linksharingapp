@@ -13,6 +13,7 @@ import {
 import { auth } from "@/firebase";
 import * as htmlToImage from "html-to-image";
 import Popup from "@/components/PopUp";
+import BackToHome from "@/components/BackToHome";
 
 type Link = {
   _id: string;
@@ -156,60 +157,69 @@ const QRCodeProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 max-w-3xl">
-      <Card>
-        <CardContent className="pt-6">
-          <h2 className="text-2xl font-bold mb-4 text-center">User Profile</h2>
+    <div className="container p-4 ">
+      <div className="flex justify-start p-4">
+        <BackToHome />
+      </div>
+      <div className="w-full flex justify-center">
+        <Card>
+          <CardContent className="pt-6">
+            <h2 className="text-2xl font-bold mb-4 text-center">
+              User Profile
+            </h2>
 
-          <div className="flex flex-col items-center mb-6">
-            {/* QR Code container */}
-            <div ref={qrCodeRef}>
-              <QRCodeSVG value={qrCodeValue} size={200} />
+            <div className="flex flex-col items-center mb-6">
+              {/* QR Code container */}
+              <div ref={qrCodeRef}>
+                <QRCodeSVG value={qrCodeValue} size={200} />
+              </div>
+
+              {/* Buttons */}
+              <div className="flex space-x-4 mt-4">
+                <button
+                  onClick={handleDownloadQRCode}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
+                >
+                  Download QR Code
+                </button>
+
+                <button
+                  onClick={handleCopyQRCode}
+                  className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors"
+                >
+                  Copy QR Code
+                </button>
+              </div>
             </div>
 
-            {/* Buttons */}
-            <div className="flex space-x-4 mt-4">
-              <button
-                onClick={handleDownloadQRCode}
-                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
-              >
-                Download QR Code
-              </button>
-
-              <button
-                onClick={handleCopyQRCode}
-                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors"
-              >
-                Copy QR Code
-              </button>
+            <div className="space-y-4">
+              {profileData.links.map((link) => (
+                <a
+                  key={link._id}
+                  href={`https://${link.platform.toLowerCase()}.com/${
+                    link.link
+                  }`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-3 rounded-md bg-gray-100 hover:bg-gray-200 transition-colors"
+                >
+                  <div className="flex items-center">
+                    {getIcon(link.platform)}
+                    <span className="ml-3 font-medium">{link.platform}</span>
+                  </div>
+                  <span className="text-sm text-gray-500">{link.link}</span>
+                </a>
+              ))}
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          <div className="space-y-4">
-            {profileData.links.map((link) => (
-              <a
-                key={link._id}
-                href={`https://${link.platform.toLowerCase()}.com/${link.link}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between p-3 rounded-md bg-gray-100 hover:bg-gray-200 transition-colors"
-              >
-                <div className="flex items-center">
-                  {getIcon(link.platform)}
-                  <span className="ml-3 font-medium">{link.platform}</span>
-                </div>
-                <span className="text-sm text-gray-500">{link.link}</span>
-              </a>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      <Popup
-        message="QR code copied to clipboard!"
-        isOpen={isPopupOpen}
-        onClose={() => setIsPopupOpen(false)}
-      />
+        <Popup
+          message="QR code copied to clipboard!"
+          isOpen={isPopupOpen}
+          onClose={() => setIsPopupOpen(false)}
+        />
+      </div>
     </div>
   );
 };
