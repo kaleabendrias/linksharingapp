@@ -17,15 +17,18 @@ const LoginForm: React.FC = () => {
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    setLoading(true);
     setError("");
 
     if (!email || !password) {
       setError("All fields are required.");
+      setLoading(false);
       return;
     }
 
     if (!/\S+@\S+\.\S+/.test(email)) {
       setError("Invalid email address.");
+      setLoading(false);
       return;
     }
 
@@ -45,6 +48,7 @@ const LoginForm: React.FC = () => {
         },
       });
 
+      setLoading(false);
       router.push("/");
     } catch (e) {
       if (e instanceof Error) {
@@ -65,6 +69,7 @@ const LoginForm: React.FC = () => {
       } else {
         setError("An unknown error occurred.");
       }
+      setLoading(false);
     }
   }
 

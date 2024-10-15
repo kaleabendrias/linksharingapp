@@ -95,6 +95,8 @@ const CustomizeLinksForm: React.FC = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [previewLoading, setPreviewLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -156,7 +158,7 @@ const CustomizeLinksForm: React.FC = () => {
   };
 
   const handleSave = async () => {
-    console.log("making it");
+    setLoading(true);
     try {
       const response = await fetch("https://linksharingapp-back.vercel.app/api/links", {
         method: "POST",
@@ -177,8 +179,11 @@ const CustomizeLinksForm: React.FC = () => {
       setSavedLinks([...links]);
       saveToLocalStorage();
 
+      setLoading(false);
+
       router.push("/profile/qrcode");
     } catch (error) {
+      setLoading(false);
       console.error("Failed to save links:", error);
     }
   };
@@ -225,6 +230,7 @@ const CustomizeLinksForm: React.FC = () => {
   };
 
   const handlePreviewClick = () => {
+    setPreviewLoading(true);
     saveToLocalStorage();
     router.push("/profile/preview");
   };
@@ -236,7 +242,7 @@ const CustomizeLinksForm: React.FC = () => {
           <Image src={logo} alt="logo" width={32} height={32} />
           <h1 className="font-bold text-2xl">devlinks</h1>
         </div>
-        <Button onClick={handlePreviewClick}>Preview</Button>
+        <Button onClick={handlePreviewClick} disabled={previewLoading}>Preview</Button>
       </header>
 
       <div className="flex flex-col lg:flex-row gap-8">
@@ -323,8 +329,8 @@ const CustomizeLinksForm: React.FC = () => {
                       />
                     ))}
                   </div>
-                  <Button onClick={handleSave} className="w-full mt-4">
-                    Save
+                  <Button onClick={handleSave} className="w-full mt-4" disabled={loading}>
+                  {loading ? "Saving..." : "Save"}
                   </Button>
                 </CardContent>
               </Card>
@@ -394,8 +400,9 @@ const CustomizeLinksForm: React.FC = () => {
                         placeholder="e.g. email@example.com"
                       />
                     </div>
-                    <Button className="w-full" onClick={handleSave}>
-                      Save
+
+                    <Button className="w-full" onClick={handleSave} disabled={loading}>
+                      {loading ? "Saving..." : "Save"}
                     </Button>
                   </div>
                 </CardContent>
