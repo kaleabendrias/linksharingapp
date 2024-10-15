@@ -14,12 +14,10 @@ const LoginForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  // Handle form submission
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     setError("");
 
-    // Validate inputs
     if (!email || !password) {
       setError("All fields are required.");
       return;
@@ -38,7 +36,7 @@ const LoginForm: React.FC = () => {
       );
       const idToken = await credential.user.getIdToken();
 
-      console.log("id: ", idToken)
+      console.log("id: ", idToken);
 
       await fetch("/api/login", {
         headers: {
@@ -48,7 +46,24 @@ const LoginForm: React.FC = () => {
 
       router.push("/");
     } catch (e) {
-      setError((e as Error).message);
+      if (e instanceof Error) {
+        const errorMessage = e.message;
+        const errorCode = "code" in e ? (e as any).code : "unknown";
+        console.error("Error code:", errorCode);
+        console.error("Error during login:", errorMessage);
+
+        if (errorCode === "auth/user-not-found") {
+          setError("No user found with this email.");
+        } else if (errorCode === "auth/invalid-credential") {
+          setError("Incorrect password.");
+        } else if (errorCode === "auth/invalid-email") {
+          setError("Invalid email format.");
+        } else {
+          setError(`Error: ${errorMessage}`);
+        }
+      } else {
+        setError("An unknown error occurred.");
+      }
     }
   }
 
@@ -111,6 +126,7 @@ const LoginForm: React.FC = () => {
             </div>
           </div>
           {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
+          <a href="/auth/forgot" className="w-full text-sm text-blue-600 text-right">Forgot password?</a>
           <div>
             <button
               type="submit"
